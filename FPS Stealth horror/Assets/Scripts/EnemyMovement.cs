@@ -9,7 +9,8 @@ public class EnemyMovement : MonoBehaviour
     int MoveSpeed = 4;
     int MaxDist = 10;
     int MinDist = 5;
-
+    bool canTakedown = false;
+    
 
 
 
@@ -28,5 +29,11 @@ public class EnemyMovement : MonoBehaviour
             transform.position += transform.forward * MoveSpeed * Time.deltaTime;
 
         }
+    }
+    public enum EnemyState
+    {
+        patrol,
+        chase,
+        shooting
     }
 }
