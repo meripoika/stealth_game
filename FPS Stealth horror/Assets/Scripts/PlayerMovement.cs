@@ -105,11 +105,17 @@ public class PlayerMovement : MonoBehaviour
         if(Input.GetKeyDown(crouchKey))
         {
             transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
-            rb.AddForce(Vector3.down * 5f, ForceMode.Impulse);
+            if (grounded)
+            {
+                rb.AddForce(Vector3.down * 5f, ForceMode.Impulse);
+            }
         }
 
         // stop Crouch
-        transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
+        if(Input.GetKeyUp(crouchKey))
+        {
+            transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
+        }      
     }
 
     private void StateHandler()
@@ -167,9 +173,10 @@ public class PlayerMovement : MonoBehaviour
 
     private void Jump()
     {
-        rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+        //rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+        rb.velocity = new Vector3(rb.velocity.x, jumpForce, rb.velocity.z);
 
-        rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+        //rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
     }
 
     private void ResetJump()
