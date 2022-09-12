@@ -34,7 +34,7 @@ public class PlayerMovement : MonoBehaviour
 
     public Transform groundCheck;
     public float groundDistance = 0.4f;
-
+    public PlayerCamera pCamera;
     public Transform orientation;
 
     float horizontalInput;
@@ -46,12 +46,19 @@ public class PlayerMovement : MonoBehaviour
 
     public MovementState state;
 
+    public bool canMove = true;
+
     public enum MovementState
     {
         walking,
         sprinting,
         crouching,
         air
+    }
+
+    private void Awake()
+    {
+        GameManager.Instance.Player = this;
     }
 
     private void Start()
@@ -66,56 +73,65 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        //ground Check
-        //grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, whatIsGround);
-        grounded = Physics.CheckSphere(groundCheck.position, groundDistance, whatIsGround);
+        if (!canMove)
+        {
+            grounded = Physics.CheckSphere(groundCheck.position, groundDistance, whatIsGround);
 
-        MyInput();
-        SpeedControl();
-        StateHandler();
+            MyInput();
+            SpeedControl();
+            StateHandler();
 
-        //drag Handle
-        if (grounded)
-            rb.drag = groundDrag;
-        else
-            rb.drag = 0;
+            //drag Handle
+            if (grounded)
+                rb.drag = groundDrag;
+            else
+                rb.drag = 0;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            GameManager.Instance.PauseGame();
+        }
     }
 
     private void FixedUpdate()
     {
-        MovePlayer();
+        if (!canMove)
+        {
+            MovePlayer();
+        }
     }
 
     private void MyInput()
     {
-        horizontalInput = Input.GetAxisRaw("Horizontal");
-        verticalInput = Input.GetAxisRaw("Vertical");
+            horizontalInput = Input.GetAxisRaw("Horizontal");
+            verticalInput = Input.GetAxisRaw("Vertical");
 
-        //when to jump
-        if (Input.GetKey(jumpKey) && readyToJump && grounded)
-        {
-            readyToJump = false;
-
-            Jump();
-
-            Invoke(nameof(ResetJump), jumpCooldown);
-        }
-
-        // Start Crouch
-        if(Input.GetKeyDown(crouchKey))
-        {
-            transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
-            if (grounded)
+            //when to jump
+            if (Input.GetKey(jumpKey) && readyToJump && grounded)
             {
-                rb.AddForce(Vector3.down * 5f, ForceMode.Impulse);
-            }
-        }
+                readyToJump = false;
 
-        // stop Crouch
-        if(Input.GetKeyUp(crouchKey))
-        {
-            transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
-        }      
+                Jump();
+
+                Invoke(nameof(ResetJump), jumpCooldown);
+            }
+
+            // Start Crouch
+            if (Input.GetKeyDown(crouchKey))
+            {
+                transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
+                if (grounded)
+                {
+                    rb.AddForce(Vector3.down * 5f, ForceMode.Impulse);
+                }
+            }
+
+            // stop Crouch
+            if (Input.GetKeyUp(crouchKey))
+            {
+                transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
+            }
     }
 
     private void StateHandler()
