@@ -5,6 +5,7 @@ using UnityEngine;
 public class GameManager : Singleton<GameManager>
 {
     public PlayerMovement Player;
+    public GameObject PlayerObj;
 
     bool isPaused = false;
 

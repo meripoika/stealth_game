@@ -59,6 +59,7 @@ public class PlayerMovement : MonoBehaviour
     private void Awake()
     {
         GameManager.Instance.Player = this;
+        GameManager.Instance.PlayerObj = this.gameObject;
     }
 
     private void Start()
@@ -73,20 +74,17 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        if (!canMove)
-        {
-            grounded = Physics.CheckSphere(groundCheck.position, groundDistance, whatIsGround);
+        grounded = Physics.CheckSphere(groundCheck.position, groundDistance, whatIsGround);
 
-            MyInput();
-            SpeedControl();
-            StateHandler();
+        MyInput();
+        SpeedControl();
+        StateHandler();
 
-            //drag Handle
-            if (grounded)
-                rb.drag = groundDrag;
-            else
-                rb.drag = 0;
-        }
+        //drag Handle
+        if (grounded)
+            rb.drag = groundDrag;
+        else
+            rb.drag = 0;
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
@@ -104,47 +102,47 @@ public class PlayerMovement : MonoBehaviour
 
     private void MyInput()
     {
-            horizontalInput = Input.GetAxisRaw("Horizontal");
-            verticalInput = Input.GetAxisRaw("Vertical");
+        horizontalInput = Input.GetAxisRaw("Horizontal");
+        verticalInput = Input.GetAxisRaw("Vertical");
 
-            //when to jump
-            if (Input.GetKey(jumpKey) && readyToJump && grounded)
+        //when to jump
+        if (Input.GetKey(jumpKey) && readyToJump && grounded)
+        {
+            readyToJump = false;
+
+            Jump();
+
+            Invoke(nameof(ResetJump), jumpCooldown);
+        }
+
+        // Start Crouch
+        if (Input.GetKeyDown(crouchKey))
+        {
+            transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
+            if (grounded)
             {
-                readyToJump = false;
-
-                Jump();
-
-                Invoke(nameof(ResetJump), jumpCooldown);
+                rb.AddForce(Vector3.down * 5f, ForceMode.Impulse);
             }
+        }
 
-            // Start Crouch
-            if (Input.GetKeyDown(crouchKey))
-            {
-                transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
-                if (grounded)
-                {
-                    rb.AddForce(Vector3.down * 5f, ForceMode.Impulse);
-                }
-            }
-
-            // stop Crouch
-            if (Input.GetKeyUp(crouchKey))
-            {
-                transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
-            }
+        // stop Crouch
+        if (Input.GetKeyUp(crouchKey))
+        {
+            transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
+        }
     }
 
     private void StateHandler()
     {
         // Sprint mode
-         if (grounded && Input.GetKey(sprintKey))
+        if (grounded && Input.GetKey(sprintKey))
         {
             state = MovementState.sprinting;
             moveSpeed = sprintSpeed;
         }
 
         // Walk mode
-       else if (grounded)
+        else if (grounded)
         {
             state = MovementState.walking;
             moveSpeed = walkSpeed;
@@ -180,7 +178,7 @@ public class PlayerMovement : MonoBehaviour
         Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
 
         //limit velocity if needed
-        if(flatVel.magnitude > moveSpeed)
+        if (flatVel.magnitude > moveSpeed)
         {
             Vector3 limitedVel = flatVel.normalized * moveSpeed;
             rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);
