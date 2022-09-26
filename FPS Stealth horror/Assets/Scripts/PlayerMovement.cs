@@ -94,10 +94,11 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!canMove)
+        if (canMove)
         {
             MovePlayer();
         }
+
     }
 
     private void MyInput()

@@ -21,8 +21,7 @@ public class EnemyMovement : MonoBehaviour
         Agent = GetComponent<NavMeshAgent>();
 
         Agent.autoBraking = false;
-        PatrolState();
-        
+        PatrolState();    
     }
 
     private void Awake()
@@ -50,6 +49,7 @@ public class EnemyMovement : MonoBehaviour
 
         if (!Agent.pathPending && Agent.remainingDistance < 0.5f)
             PatrolState();
+
     }
     void PatrolState()
     {
@@ -89,7 +89,6 @@ public class EnemyMovement : MonoBehaviour
                     {
                         playerInSight = true;
                         state = EnemyState.chase;
-
                     }
                 }
             }
