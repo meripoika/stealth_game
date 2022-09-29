@@ -13,10 +13,20 @@ public class EnemyMovement : MonoBehaviour
     bool playerInSight = false;
     public LayerMask layer;
 
+    public Transform[] Points;
+    private int destPoint = 0;
 
     private void Start()
     {
         Agent = GetComponent<NavMeshAgent>();
+
+        Agent.autoBraking = false;
+        PatrolState();    
+    }
+
+    private void Awake()
+    {
+
     }
     private void Update()
     {
@@ -37,12 +47,27 @@ public class EnemyMovement : MonoBehaviour
                 break;
         }
 
+        if (!Agent.pathPending && Agent.remainingDistance < 0.5f)
+            PatrolState();
+
     }
+    void PatrolState()
+    {
+        if (Points.Length == 0)
+            return;
+
+        // Set agent to currently set destination
+        Agent.destination = Points[destPoint].position;
+
+        // Choose next point in array as destination, cycle to start if necessary
+        destPoint = (destPoint + 1) % Points.Length;
+        state = EnemyState.patrol;
+    }
+
 
     void ChaseState()
     {
-        //Agent.SetDestination();
-        Debug.Log("zulul");
+        Agent.SetDestination(GameManager.Instance.PlayerObj.transform.position);
     }
 
     void LookForPlayer()
@@ -64,7 +89,6 @@ public class EnemyMovement : MonoBehaviour
                     {
                         playerInSight = true;
                         state = EnemyState.chase;
-
                     }
                 }
             }
