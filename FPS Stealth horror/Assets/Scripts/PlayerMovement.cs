@@ -198,4 +198,15 @@ public class PlayerMovement : MonoBehaviour
     {
         readyToJump = true;
     }
+
+    public void OnCollisionStay(Collision collision)
+    {
+        if (collision.transform.name == "Enemy")
+        {
+            if (Input.GetKeyDown(KeyCode.V))
+            {
+
+            }
+        }
+    }
 }
