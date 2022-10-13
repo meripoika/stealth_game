@@ -30,7 +30,7 @@ public class EnemyHealth : MonoBehaviour
         healthAmount -= Damage;
     }
 
-    public void OnCollisionEnter(Collision collision)
+    public void OnCollisionStay(Collision collision)
     {
         if (collision.transform.name == "Player")
         {
