@@ -21,7 +21,7 @@ public class GameManager : Singleton<GameManager>
         if (t)
         {
             Time.timeScale = 0;
-            UIManager.Instance.ToggleMenu(true);
+            UIManager.Instance.PauseMenu(true);
             isPaused = true;
             Player.canMove = false;
             Player.pCamera.enabled = false;
@@ -29,7 +29,7 @@ public class GameManager : Singleton<GameManager>
         else
         {
             Time.timeScale = 1;
-             UIManager.Instance.ToggleMenu(false);
+             UIManager.Instance.PauseMenu(false);
             isPaused = false;
             Player.canMove = true;
             Player.pCamera.enabled = true;

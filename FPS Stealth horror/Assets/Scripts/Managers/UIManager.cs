@@ -5,17 +5,26 @@ using UnityEngine;
 public class UIManager : Singleton<UIManager>
 {
     public GameObject MenuPanel;
-    public GameObject HUDPanel;
+    public GameObject PausePanel;
 
     private void Awake()
     {
         MenuPanel.SetActive(false);
-        HUDPanel.SetActive(false);
-    }
+        PausePanel.SetActive(false);
+}
 
     public void ToggleMenu(bool t)
     {
         MenuPanel.SetActive(t);
-        HUDPanel.SetActive(!t);
+    }
+
+    public void PauseMenu( bool t)
+    {
+        PausePanel.SetActive(t);
+    }
+
+    public void EndGame()
+    {
+        Application.Quit();
     }
 }
