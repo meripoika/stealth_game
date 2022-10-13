@@ -7,10 +7,12 @@ public class EnemyMovement : MonoBehaviour
 {
     NavMeshAgent Agent;
 
+    public PlayerMovement PM;
+
     public float aggroDistance;
     public EnemyState state = EnemyState.idle;
     public float chaseTime;
-    bool playerInSight = false;
+    [SerializeField]bool playerInSight = false;
     public LayerMask layer;
 
     public Transform[] Points;
